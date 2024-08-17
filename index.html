@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Relationship Counter</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .counter-container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff6f61;
+            margin-bottom: 15px;
+        }
+
+        .time-info {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .time-info span {
+            font-weight: bold;
+            color: #ff6f61;
+        }
+
+        .input-container {
+            margin: 15px 0;
+        }
+
+        input[type="date"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin: 5px 0;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            background-color: #ff6f61;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff4f41;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #ff6f61;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff6f61;
+            border-radius: 50%;
+            animation: float 5s infinite ease-in-out;
+            opacity: 0.8;
+            z-index: 0;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff6f61;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes confetti {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200vh) rotate(720deg);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6f61;
+            animation: confetti 3s linear infinite;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .music-controls {
+            margin-top: 15px;
+        }
+
+        .music-controls button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #ff6f61;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .music-controls button:hover {
+            background-color: #ff4f41;
+        }
+
+        .theme-selector {
+            margin-top: 15px;
+        }
+
+        .theme-selector select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin: 5px;
+        }
+
+        .personal-message {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .personal-message textarea {
+            width: 90%;
+            max-width: 300px;
+            height: 80px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .personal-message p {
+            background: #ff6f61;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .quote {
+                font-size: 0.9rem;
+            }
+            input[type="date"] {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+            button {
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background music -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="counter-container">
+        <h1 id="greeting">Our Love Story</h1>
+        <div class="time-info" id="daysCount">0 days</div>
+        <div class="time-info" id="weeksCount">0 weeks</div>
+        <div class="time-info" id="timeCount">0 hours, 0 minutes</div>
+
+        <div class="input-container">
+            <input type="date" id="startDateInput">
+            <button onclick="updateStartDate()">Set Date</button>
+        </div>
+
+        <div class="quote" id="quoteDisplay">"Love is not about how many days, months, or years you’ve been together. It’s about how much you love each other every day."</div>
+
+        <!-- Music Control and Theme Selector -->
+        <div class="music-controls">
+            <button onclick="toggleMusic()">Play/Pause Music</button>
+        </div>
+
+        <div class="theme-selector">
+            <label for="themeSelect">Choose a Theme:</label>
+            <select id="themeSelect" onchange="changeTheme()">
+                <option value="default">Default</option>
+                <option value="romantic">Romantic</option>
+                <option value="sunset">Sunset</option>
+                <option value="night">Night</option>
+            </select>
+        </div>
+
+        <!-- Personalized Message -->
+        <div class="personal-message">
+            <textarea id="personalMessage" placeholder="Write a personal message here..."></textarea>
+            <button onclick="saveMessage()">Save Message</button>
+            <p id="savedMessage">Your personal message will appear here...</p>
+        </div>
+    </div>
+
+    <!-- Falling hearts and confetti animation -->
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+
+        let startDate = new Date(); // Default to today's date if no date is set
+        const quotes = [
+            "\"You are my today and all of my tomorrows.\"",
+            "\"Love is composed of a single soul inhabiting two bodies.\"",
+            "\"Where there is love, there is life.\"",
+            "\"To love and be loved is to feel the sun from both sides.\"",
+            "\"In all the world, there is no heart for me like yours.\""
+        ];
+
+        function updateStartDate() {
+            const newStartDate = document.getElementById('startDateInput').value;
+            if (newStartDate) {
+                startDate = new Date(newStartDate);
+                localStorage.setItem('relationshipStartDate', newStartDate);
+                updateTime();
+            }
+        }
+
+        function updateTime() {
+            const currentDate = new Date();
+            const timeDifference = currentDate - startDate;
+
+            const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const weeksDifference = Math.floor(daysDifference / 7);
+            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+            document.getElementById('daysCount').textContent = `${daysDifference} days`;
+            document.getElementById('weeksCount').textContent = `${weeksDifference} weeks`;
+            document.getElementById('timeCount').textContent = `${hoursDifference} hours, ${minutesDifference % 60} minutes`;
+
+            // Trigger confetti if a milestone is reached
+            if (daysDifference % 100 === 0 || daysDifference % 365 === 0) {
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(createConfetti, i * 100);
+                }
+            }
+
+            // Trigger hearts falling animation
+            if (daysDifference % 30 === 0) {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(createHeart, i * 500);
+                }
+            }
+
+            // Update love quote every 15 seconds
+            setInterval(() => {
+                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                document.getElementById('quoteDisplay').textContent = randomQuote;
+            }, 15000);
+        }
+
+        // Toggle music play/pause
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        // Change theme
+        function changeTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            const body = document.body;
+            switch (theme) {
+                case 'romantic':
+                    body.style.background = 'linear-gradient(120deg, #ff9a9e, #fad0c4)';
+                    break;
+                case 'sunset':
+                    body.style.background = 'linear-gradient(120deg, #ff7e5f, #feb47b)';
+                    break;
+                case 'night':
+                    body.style.background = 'linear-gradient(120deg, #232526, #414345)';
+                    break;
+                default:
+                    body.style.background = 'linear-gradient(120deg, #ff9a9e, #fad0c4)';
+            }
+        }
+
+        // Load saved start date from localStorage
+        window.onload = function() {
+            const savedDate = localStorage.getItem('relationshipStartDate');
+            if (savedDate) {
+                startDate = new Date(savedDate);
+                document.getElementById('startDateInput').value = savedDate;
+            }
+            updateTime();
+
+            // Load saved personal message
+            const savedMessage = localStorage.getItem('personalMessage');
+            if (savedMessage) {
+                document.getElementById('personalMessage').value = savedMessage;
+                document.getElementById('savedMessage').textContent = savedMessage;
+            }
+        };
+
+        // Update the time every minute
+        setInterval(updateTime, 60000);
+
+        // Save personal message
+        function saveMessage() {
+            const message = document.getElementById('personalMessage').value;
+            localStorage.setItem('personalMessage', message);
+            document.getElementById('savedMessage').textContent = message;
+        }
+    </script>
+</body>
+</html>
